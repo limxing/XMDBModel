@@ -1,6 +1,7 @@
 # XMDBModel
 基于SQLite.swift的数据库orm增删改查
 
+```
 /*
 XMDBModel Type         SQLite.swift Type      SQLite Type
 NSNumber                     Int64(Int,Bool)         INTEGER
@@ -10,7 +11,7 @@ nil                                         nil                     NULL
 Data                                SQLite.Blob†             BLOB
 Date                                Int64 (Date)             INTEGER
 */
-
+```
 ### How To Use
 1、copy Source to your project
 
