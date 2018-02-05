@@ -36,8 +36,9 @@ class XMBean:XMDBModel,HandyJSON{
     var mfrom:String?
     var toAccount:String?
     
-//    var isRead:NSNumber?// 当前消息是否被阅读了，1 是 0 否
-    
+    var isRead:NSNumber?// 当前消息是否被阅读了，1 是 0 否
+    var test:String?
+    var test3:String?
     
     //不会被SQL创建，也可以被网上的内容映射赋值（NSNumber，String,Data,Date，'Double', 为数据库创建字段支持的类型，否者不予创建，其中Double定义时还是使用NSNumber，在doubleKeys中声明）
     var isChecked:Bool? //是否被选中， 

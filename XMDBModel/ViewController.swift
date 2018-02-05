@@ -16,13 +16,13 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         
-        let xmbean = XMBean()
-        xmbean.payload = "save payload"
-        xmbean.isSend = false
-        xmbean.timestamp = 111111111
-        xmbean.toAccount = "aaaaaaaa"
-        
-        print(xmbean.add())//增
+//        let xmbean = XMBean()
+//        xmbean.payload = "save payload"
+//        xmbean.isSend = false
+//        xmbean.timestamp = 111111111
+//        xmbean.toAccount = "aaaaaaaa"
+//        
+//        print(xmbean.add())//增
         XMBean.query().forEach { (model) in//全部查询
             let xm = model as! XMBean
             print(xm.toJSONString(prettyPrint: true)!)

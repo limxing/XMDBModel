@@ -236,14 +236,57 @@ class XMDBModel:NSObject {
         }
         
         do {
-            
             try XMDataBase.conn?.run(getTable().insert(getSetters()))
             print("XMDBModel --> 存消息成功")
         } catch  let e {
+            
             print("XMDBModel --> 存消息失败\(e)")
+            if "\(e)".contains("has no column named"){
+                    let column = "\(e)".split(separator: " ")[6]
+                let addString = getAddColume(column: column)
+                do {
+                    if addString.count > 0 {
+                        try XMDataBase.conn?.run(addString)
+                         print("XMDBModel -->添加字段完成\(column)")
+                        _ = add()
+                    }
+                } catch  {
+                     print("XMDBModel -->添加字段失败\(column)")
+                }
+            }
             return false
         }
         return true
+    }
+    
+    //获取添加字段的语句
+    private func getAddColume(column:String.SubSequence)->String{
+        var addString = ""
+        mirror?.forEach({ (child) in
+            if let name = child.label {
+                if (name == column) {
+                    let type = Mirror(reflecting: child.value).subjectType
+                    switch type{
+                    case is String.Type, is ImplicitlyUnwrappedOptional<String>.Type,is String?.Type:
+                        addString = getTable().addColumn(Expression<String?>(name))
+                    case is NSNumber?.Type,is NSNumber.Type, is  ImplicitlyUnwrappedOptional<NSNumber>.Type:
+                        if doubleKeys().contains(child.label!){
+                            addString = getTable().addColumn(Expression<Double?>(name))
+                        }else{
+                            addString = getTable().addColumn(Expression<Int64?>(name))
+                        }
+                    case is Data?.Type,is Data.Type, is ImplicitlyUnwrappedOptional<Data>.Type:
+                        addString = getTable().addColumn(Expression<Blob?>(name))
+                    case is Date?.Type, is Date.Type, is ImplicitlyUnwrappedOptional<Date>.Type:
+                        addString = getTable().addColumn(Expression<Date?>(name))
+                    default:
+                        print("XMDBModel 未知的字段类型--> \(type)")
+                        break
+                    }
+                }
+            }
+        })
+        return addString
     }
     
     
@@ -329,10 +372,27 @@ class XMDBModel:NSObject {
         do {
             if let rows = try XMDataBase.conn?.prepare(table){
                 for row in rows{
-                    results.append(rowToModel(row: row))
+                    results.append(try rowToModel(row: row))
                 }
             }
-        } catch  {
+        } catch let e {
+            let error = "\(e)"
+            
+            if (error.contains("No such column")){
+                let column =  error.split(separator: " ")[3].split(separator: "\"")[1]
+                let addString = m.getAddColume(column: column)
+                
+                do {
+                    if addString.count > 0 {
+                        try XMDataBase.conn?.run(addString)
+                        print("XMDBModel -->添加字段完成\(column)")
+                        _ = query()
+                    }
+                } catch  {
+                    print("XMDBModel -->添加字段失败\(column)")
+                }
+            }
+            
             
         }
         
@@ -340,7 +400,7 @@ class XMDBModel:NSObject {
     }
     
     //根据查询的列，返回对象
-    private class func rowToModel(row:Row)->XMDBModel{
+    private class func rowToModel(row:Row) throws ->XMDBModel{
         let model = self.init()
         let keys = model.getKeys(exceptPriK: false)
         let doubles = model.doubleKeys()
@@ -350,47 +410,48 @@ class XMDBModel:NSObject {
                     let type = Mirror(reflecting: value).subjectType
                     switch type{
                     case is String.Type, is ImplicitlyUnwrappedOptional<String>.Type:
-                        model.setValue(row[Expression<String>(n)], forKey: n)
+            
+                        model.setValue(try row.get(Expression<String>(n)), forKey: n)
                     case is String?.Type:
-                        if let v = row[Expression<String?>(n)] {
+                        if let v = try row.get(Expression<String?>(n)) {
                             model.setValue(v, forKey: n)
                         }else{
                             model.setValue(nil, forKey: n)
                         }
                     case is NSNumber.Type, is  ImplicitlyUnwrappedOptional<NSNumber>.Type:
                         if doubles.contains(n){
-                            model.setValue(row[Expression<Double>(n)], forKey: n)
+                            model.setValue(try row.get(Expression<Double>(n)), forKey: n)
                         }else{
-                            model.setValue(row[Expression<Int64>(n)], forKey: n)
+                            model.setValue(try row.get(Expression<Int64>(n)), forKey: n)
                         }
                         
                     case is NSNumber?.Type:
                         if doubles.contains(n){
-                            if let v = row[Expression<Double?>(n)] {
+                            if let v = try row.get(Expression<Double?>(n)) {
                                 model.setValue(v, forKey: n)
                             }else{
                                 model.setValue(nil, forKey: n)
                             }
                         }else{
-                            if let v = row[Expression<Int64?>(n)] {
+                            if let v = try row.get(Expression<Int64?>(n)) {
                                 model.setValue(v, forKey: n)
                             }else{
                                 model.setValue(nil, forKey: n)
                             }
                         }
                     case is Data.Type, is ImplicitlyUnwrappedOptional<Data>.Type:
-                        model.setValue(Data(bytes: row[Expression<Blob>(n)].bytes), forKey: n)
+                        model.setValue(Data(bytes: (try row.get(Expression<Blob>(n)).bytes)), forKey: n)
                     case is Data?.Type:
-                        if let v = row[Expression<Blob?>(n)]{
+                        if let v = try row.get(Expression<Blob?>(n)){
                             model.setValue(Data(bytes: v.bytes), forKey: n)
                         }else{
                             model.setValue(nil, forKey: n)
                         }
                         
                     case is Date.Type,is ImplicitlyUnwrappedOptional<Date>.Type:
-                        model.setValue(row[Expression<Date>(n)], forKey: n)
+                        model.setValue(try row.get(Expression<Date>(n)), forKey: n)
                     case is Date?.Type:
-                        if let v = row[Expression<Date?>(n)]{
+                        if let v = try row.get(Expression<Date?>(n)){
                             model.setValue(v, forKey: n)
                         }else{
                             model.setValue(nil, forKey: n)
@@ -425,6 +486,5 @@ class XMDBModel:NSObject {
             }
         }  
     }
-    
-
 }
+
