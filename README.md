@@ -11,7 +11,7 @@ Data                                SQLite.Blob†             BLOB
 Date                                Int64 (Date)             INTEGER
 */
 
-###How To Use
+### How To Use
 1、copy Source to your project
 
 2、add depend library：pod 'SQLite.swift', '~> 0.11.4'
@@ -21,9 +21,9 @@ Date                                Int64 (Date)             INTEGER
 4、API ：demo中XMBean中有属性方法介绍，ViewController中有增删改查使用方法
 
 
-###参考：
+### 参考：
     <a href="https://github.com/KevinZhouRafael/ActiveSQLite">ActiveSQLite</a>
-###License
+### License
     XMDBModel is available under the MIT license.
 
 
