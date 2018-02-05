@@ -1,0 +1,17 @@
+PODS:
+  - HandyJSON (4.0.0-beta.1)
+  - SQLite.swift (0.11.4):
+    - SQLite.swift/standard (= 0.11.4)
+  - SQLite.swift/standard (0.11.4)
+
+DEPENDENCIES:
+  - HandyJSON (= 4.0.0-beta.1)
+  - SQLite.swift (~> 0.11.4)
+
+SPEC CHECKSUMS:
+  HandyJSON: 428bb18e2c34c2a77361accebf90cf64e4f74118
+  SQLite.swift: 3e3bee21da701b5b9f87c4a672cb54f233505692
+
+PODFILE CHECKSUM: f69a36c030f92e84d5059a1bffc54bead00d77ab
+
+COCOAPODS: 1.3.1

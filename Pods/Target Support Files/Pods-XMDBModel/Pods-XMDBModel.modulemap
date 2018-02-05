@@ -1,0 +1,6 @@
+framework module Pods_XMDBModel {
+  umbrella header "Pods-XMDBModel-umbrella.h"
+
+  export *
+  module * { export * }
+}
