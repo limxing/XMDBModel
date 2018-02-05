@@ -4,12 +4,12 @@
 ```
 /*
 XMDBModel Type         SQLite.swift Type      SQLite Type
-NSNumber                     Int64(Int,Bool)         INTEGER
-NSNumber                         Double                  REAL
-String                                 String                  TEXT
-nil                                         nil                     NULL
-Data                                SQLite.Blob†             BLOB
-Date                                Int64 (Date)             INTEGER
+NSNumber                 Int64(Int,Bool)         INTEGER
+NSNumber                    Double                  REAL
+String                      String                  TEXT
+nil                         nil                     NULL
+Data                      SQLite.Blob               BLOB
+Date                      Int64 (Date)             INTEGER
 */
 ```
 ### How To Use
