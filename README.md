@@ -23,7 +23,7 @@ Date                      Int64 (Date)             INTEGER
 
 
 ### 参考：
-    <a src="https://github.com/KevinZhouRafael/ActiveSQLite">ActiveSQLite</a>
+   ActiveSQLite
 ### License
     XMDBModel is available under the MIT license.
 
