@@ -386,7 +386,7 @@ class XMDBModel:NSObject {
                     if addString.count > 0 {
                         try XMDataBase.conn?.run(addString)
                         print("XMDBModel -->添加字段完成\(column)")
-                        _ = query()
+                        results = query()
                     }
                 } catch  {
                     print("XMDBModel -->添加字段失败\(column)")
